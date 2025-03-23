@@ -1,0 +1,89 @@
+/* Login container with a black border */
+.login-container {
+    background: white; /* White background for the login box */
+    border: 3px solid black; /* Black border around the login box */
+    border-radius: 15px; /* Rounded corners for the box */
+    padding: 40px; /* Padding inside the box */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+    width: 400px;
+    margin: 100px auto; /* Adjusted margin */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto; /* Automatically adjusts to content height */
+    color: black; /* Black text color for better contrast */
+    font-weight: bold; /* Bold text for headings and labels */
+    text-align: center; /* Center align text */
+}
+
+/* Headings (e.g., Login Name) */
+h2 {
+    font-weight: bold;
+    font-size: 32px; /* Increased font size for better visibility */
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Makes headings uppercase */
+}
+
+/* Input fields with black border */
+input, select {
+    width: 90%;
+    padding: 15px; /* Increased padding for a modern look */
+    margin: 10px 0;
+    border: 2px solid black; /* Black border for input fields */
+    border-radius: 5px; /* Rounded corners for inputs */
+    box-sizing: border-box;
+    background: white; /* White background for inputs */
+    color: black; /* Black text for inputs */
+    font-size: 16px; /* Larger font size for readability */
+    font-weight: bold; /* Bold text inside inputs */
+}
+
+/* Input focus effect */
+input:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 5px #007BFF; /* Subtle blue glow effect on focus */
+    border: 2px solid #007BFF; /* Blue border on focus */
+}
+
+/* Submit button */
+button {
+    background-color: #007BFF; /* Blue background for the button */
+    color: white;
+    padding: 15px 20px; /* Larger button for easier interaction */
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Larger font size for button text */
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+/* Hover and click effects for the button */
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+button:active {
+    transform: scale(0.98); /* Slightly smaller on click */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); /* Shadow effect on click */
+}
+
+/* Labels for input fields */
+label {
+    font-weight: bold;
+    font-size: 18px; /* Larger font size for labels */
+    margin-bottom: 5px; /* Space between label and input */
+    display: block; /* Ensure label is above the input */
+}
+
+/* Error message */
+.error-message {
+    color: red;
+    background: rgba(255, 255, 255, 0.1); /* Transparent red background */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}

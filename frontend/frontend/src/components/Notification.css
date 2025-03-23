@@ -1,0 +1,103 @@
+/* Notification.css */
+
+/* Notification icon (Hamburger) */
+/* Notification Icon */
+.notification-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 16px;
+    z-index: 1000;
+    cursor: pointer; /* Change the cursor to pointer */
+    display: flex;
+    align-items: center;
+    background: none; /* Remove any default background */
+    border: none; /* Remove border */
+    color: #007bff; /* Default text color for the icon */
+    transition: color 0.2s ease;
+  }
+  
+  .notification-icon:hover {
+    color: #0056b3; /* Slightly darker color on hover */
+  }
+  
+  
+  .notification-icon span {
+    font-size: 16px;
+    margin-left: 8px;
+  }
+  
+  /* Notification Panel (Fixed to the right) */
+  .notification-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100%;
+    background-color: #333; /* Dark black background */
+    color: white;
+    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 999; /* Ensures it overlays the main content */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 10px;
+    transition: transform 0.3s ease; /* Smooth transition when opening/closing */
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #222;
+    color: white;
+    border-bottom: 1px solid #444;
+  }
+  
+  .notification-header h3 {
+    margin: 0;
+  }
+  
+  .close-btn {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .close-btn:hover {
+    background-color: #555;
+  }
+  
+  /* Notification Messages */
+  .notification-body {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+  }
+  
+  .notification-message {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #444;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .notification-message:first-child {
+    margin-top: 20px;
+  }
+  
+  /* Ensure panel is visible */
+  .notification-panel.visible {
+    transform: translateX(0); /* Slide in from the right */
+  }
+  
+  /* Initially hidden */
+  .notification-panel {
+    transform: translateX(100%); /* Start off-screen to the right */
+  }
+  

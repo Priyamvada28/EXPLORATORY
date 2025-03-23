@@ -1,0 +1,102 @@
+/* Profile Component Styles */
+body {
+    background-color: red !important;
+}
+
+.profile-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: #1a1a2e;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: #0f3460;
+    color: #e94560;
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.profile-info h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.profile-info p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    color: #e94560;
+}
+
+.project-list,
+.student-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.project-item,
+.student-item {
+    background: #16213e;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.project-item:hover,
+.student-item:hover {
+    transform: scale(1.02);
+}
+
+.text-highlight {
+    color: #03dac6;
+    font-weight: bold;
+}
+
+.whatsapp-link {
+    color: #25d366;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.whatsapp-link:hover {
+    text-decoration: underline;
+}
+
+.loading-text {
+    text-align: center;
+    color: gray;
+}
+
+.error-text {
+    text-align: center;
+    color: red;
+}
+
+.no-projects-text,
+.no-students-text {
+    text-align: center;
+    color: lightgray;
+}

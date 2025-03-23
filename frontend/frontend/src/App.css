@@ -1,0 +1,54 @@
+/* General styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif; /* Cute rounded font */
+  background-image: url('https://img.freepik.com/premium-photo/book-stack-wood-table-with-book-shelf-is-background-library_40133-87.jpg?w=360');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: black;
+}
+
+/* Main container */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive blocks */
+  gap: 20px;
+  padding: 20px;
+  justify-items: center; /* Center the blocks */
+}
+
+/* Cute block elements */
+.block {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4); /* Soft pink gradient */
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: transform 0.3s ease-in-out;
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Different colors for variation */
+.block:nth-child(2) { background: linear-gradient(135deg, #fbc2eb, #a6c1ee); } /* Purple */
+.block:nth-child(3) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); } /* Blue */
+.block:nth-child(4) { background: linear-gradient(135deg, #84fab0, #8fd3f4); } /* Green */
+.block:nth-child(5) { background: linear-gradient(135deg, #ffecd2, #fcb69f); } /* Orange */
+
+/* Hover effect */
+.block:hover {
+  transform: scale(1.05);
+}
+
+/* Page Not Found */
+.not-found {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 50px;
+  color: red;
+}
