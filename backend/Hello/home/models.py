@@ -38,7 +38,7 @@ class Requestform(models.Model):
     year = models.CharField(max_length=50)
     project_name = models.ForeignKey(Projects, models.DO_NOTHING, db_column='project_name',null=True, blank=True)
     professor_email = models.ForeignKey(Professors, models.DO_NOTHING,null=True, blank=True)
-
+    github_profile = models.URLField(max_length=500, null=True, blank=True)  # ✅ New Field
     class Meta:
         managed = True
         db_table = 'Requestform'
@@ -61,6 +61,18 @@ class Assignedprojects(models.Model):
     whatsapp_link = models.URLField(max_length=500, null=True, blank=True)
     
     marked = models.BooleanField(default=False)  # False initially
+    
+    github_profile = models.URLField(max_length=500, null=True, blank=True)  # ✅ New Field
+    
+    # New field for meeting time
+    MEETING_DAYS = [
+        ('MON', 'Monday'),
+        ('TUE', 'Tuesday'),
+        ('WED', 'Wednesday'),
+        ('THU', 'Thursday'),
+        ('FRI', 'Friday'),
+    ]
+    meeting_time = models.CharField(max_length=3, choices=MEETING_DAYS, null=True, blank=True)
 
     class Meta:
         managed = True
@@ -76,6 +88,7 @@ class Submittedprojects(models.Model):
     assigned_project = models.ForeignKey(Assignedprojects, models.DO_NOTHING, null=True, blank=True)
     submission_date = models.DateField(blank=True, null=True)
     feedback = models.IntegerField(blank=True, null=True)
+    github_profile = models.URLField(max_length=500, blank=True, null=True)  # ✅ New field
     
     # file = models.CharField(max_length=255, null=True, blank=True)  # Store Google Drive file URL here
     
@@ -85,4 +98,14 @@ class Submittedprojects(models.Model):
     class Meta:
         managed = True
         db_table = 'Submittedprojects'
-   
+
+
+class ProfessorMeetingSchedule(models.Model):
+    professor_email = models.ForeignKey('Professors', on_delete=models.CASCADE, db_column='professor_email')
+    project_name = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    final_meeting_time = models.CharField(max_length=3, choices=Assignedprojects.MEETING_DAYS, null=True, blank=True)  # ✅ Uses choices from Assignedprojects
+
+    class Meta:
+        managed = True
+        db_table = 'ProfessorMeetingSchedule'
+

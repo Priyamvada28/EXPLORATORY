@@ -89,6 +89,7 @@ const Results = () => {
                             <th>Submission Date</th>
                             <th>Deadline Date</th>
                             <th>File</th>
+                            <th>GitHub Profile</th> {/* ✅ New column */}
                             <th>Feedback</th>
                             <th>Submit</th>
                         </tr>
@@ -109,6 +110,23 @@ const Results = () => {
                                         "No File"
                                     )}
                                 </td>
+
+
+                                <td>
+                    {project.github_profile ? (
+                        <a
+                            href={project.github_profile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "blue", textDecoration: "underline", fontWeight: "bold" }}
+                        >
+                            View Profile
+                        </a>
+                    ) : (
+                        "No Profile"
+                    )}
+                </td>
+                
                                 <td>
                                     <input
                                         type="text"

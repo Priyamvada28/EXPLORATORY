@@ -10,6 +10,8 @@ import Results from './components/Results';
 import SubmitProject from './components/SubmitProject';
 import Projects from './components/Projects';
 import Requests from './components/Requests';
+import MeetingScheduler from './components/MeetingScheduler'; // Import the new component
+import ProfessorMeetingSetter from './components/ProfessorMeetingSetter'; // Import the new component
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,6 +36,10 @@ const App = () => {
               <div className="container">
                 <Link to="/lab" className="block">Lab</Link>
                 <Link to="/profile" className="block">Profile</Link>
+                <Link to="/meeting-scheduler" className="block">Meeting Scheduler</Link>
+                <Link to="/meeting-setter" className="block">Meeting Setter</Link>
+
+
                 {userData?.status !== 'Professor' && (
                   <Link to={`/application-form?email=${userData.email}`} className="block">Application Form</Link>
                 )}
@@ -41,10 +47,13 @@ const App = () => {
                 {userData?.status !== 'Professor' && (
                   <Link to="/submit-project" className="block">Submit Project</Link>
                 )}
+
                 <Link to="/projects" className="block">Projects</Link>
                 {userData?.status === 'Professor' && (
                   <Link to="/requests" className="block">Requests</Link>
                 )}
+
+                
               </div>
             ) : (
               <Login onLogin={handleLogin} />
@@ -65,6 +74,8 @@ const App = () => {
         />
 
         <Route path="/requests" element={isLoggedIn ? <Requests userData={userData} /> : <Login onLogin={handleLogin} />} />
+        <Route path="/meeting-scheduler" element={isLoggedIn ? <MeetingScheduler email={userData?.email} /> : <Login onLogin={handleLogin} />} />
+        <Route path="/meeting-setter" element={isLoggedIn ? <ProfessorMeetingSetter email={userData?.email} /> : <Login onLogin={handleLogin} />} />
 
         <Route path="*" element={<h1 className="not-found">Page Not Found</h1>} />
       </Routes>

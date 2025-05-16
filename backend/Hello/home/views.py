@@ -220,6 +220,8 @@ def submit_application(request):
             student = Students.objects.get(email_id=data['student_email'])
             professor = Professors.objects.get(email_id=data['professor_email'])
             project = Projects.objects.get(project_name=data['project_name'])
+            github_link = data.get('github_profile', '').strip()
+
 
             # Save request form entry with correct ForeignKey references
             request_entry = Requestform.objects.create(
@@ -227,7 +229,8 @@ def submit_application(request):
                 name=student.name,
                 year=student.year,
                 project_name=project,
-                professor_email=professor
+                professor_email=professor,
+                github_profile=github_link  # ✅ Save GitHub profile link
             )
 
             return JsonResponse({'message': 'Application submitted successfully!'}, status=201)
@@ -276,8 +279,9 @@ from .models import Requestform, Assignedprojects
 
 
 # ADD THE SENDERS HERE--> REMINDER
-
-ALLOWED_SENDERS = ["priyamvada28negi@gmail.com"]  # Add verified emails here
+#update this to add the emails of the senders.
+ALLOWED_SENDERS = ["priyamvada28negi@gmail.com",
+                    "goyalyash1608@gmail.com"  ]  # Add verified emails here
 @csrf_exempt
 def accept_request(request):
     if request.method == "POST":
@@ -305,6 +309,7 @@ def accept_request(request):
                 professor_email=project_request.professor_email,
                 deadline_date=deadline_date,
                 whatsapp_link=whatsapp_link,  # ✅ Store WhatsApp link
+                github_profile=project_request.github_profile,  # ✅ Copy GitHub profile
             )
 
             from_email = project_request.professor_email if project_request.professor_email in ALLOWED_SENDERS else "priyamvada28negi@gmail.com"
@@ -335,15 +340,36 @@ def accept_request(request):
 @csrf_exempt
 def reject_request(request):
     if request.method == "DELETE":
-        data = json.loads(request.body)
-        request_id = data.get("request_id")
+        try:
+            data = json.loads(request.body)
+            request_id = data.get("request_id")
 
-        project_request = get_object_or_404(Requestform, request_id=request_id)
-        project_request.delete()
+            project_request = get_object_or_404(Requestform, request_id=request_id)
 
-        return JsonResponse({"message": "Request rejected."})
+            # Determine sender email
+            from_email = project_request.professor_email if project_request.professor_email in ALLOWED_SENDERS else "priyamvada28negi@gmail.com"
+            recipient_email = project_request.student_email.email_id.strip()
 
+            # Send rejection email
+            send_mail(
+                subject="Project Request Rejected",
+                message=f"Dear {project_request.name},\n\n"
+                        f"We regret to inform you that your application for the project '{project_request.project_name}' "
+                        f"could not be accepted because the project has reached its maximum student capacity.\n\n"
+                        f"Please feel free to explore other opportunities in the future.\n\n"
+                        f"Best wishes,\nIIT BHU",
+                from_email=from_email,
+                recipient_list=[recipient_email],
+                fail_silently=False,
+            )
 
+            project_request.delete()
+
+            return JsonResponse({"message": "Request rejected and student notified via email."})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Only DELETE method allowed."}, status=405)
 
 
 from django.http import JsonResponse
@@ -404,6 +430,10 @@ def submit_project(request):
 
             # Fetch the correct Project instance
             project = assigned_project.project_name  # Since it's now a ForeignKey, it gives us the whole Projects instance
+            
+            # 🔍 Fetch GitHub profile from Requestform table using student + project
+          
+            github_link = assigned_project.github_profile
 
             # Create a new submission entry
             submission = Submittedprojects.objects.create(
@@ -412,7 +442,8 @@ def submit_project(request):
                 project_name=project,  # Assign the whole Projects instance
                 professor_email=professor,
                 submission_date=now().date(),
-                file=file
+                file=file,
+                github_profile=github_link  # <-- Autofilled here
             )
 
             # Mark the assigned project as submitted
@@ -471,6 +502,7 @@ def get_pending_evaluations(request):
             'submission_date': sp.submission_date.strftime('%Y-%m-%d'),
             'deadline_date': sp.assigned_project.deadline_date.strftime('%Y-%m-%d'),
             'file_url': request.build_absolute_uri(sp.file.url) if sp.file else None , # ✅ Absolute URL
+            'github_profile': sp.github_profile  # ✅ Include GitHub link here
             # 'file_url': sp.file.url if sp.file else None  # File download link
         }
         for sp in pending_submissions
@@ -522,9 +554,6 @@ def get_projects(request):
         return JsonResponse(projects, safe=False)
     
     return JsonResponse({"error": "Invalid request method."}, status=405)
-
-
-
 
 
 
@@ -636,3 +665,165 @@ def get_profile(request, email):
         return JsonResponse({"error": "User not found"}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Assignedprojects
+from .serializers import AssignedprojectsSerializer
+
+@csrf_exempt  # Disable CSRF protection for this view
+def student_unmarked_projects(request, student_email):
+    """
+    Fetch all unmarked projects assigned to a student and allow them to set a meeting time.
+    """
+    if request.method == 'GET':
+        # Fetch unmarked projects for the student
+        assigned_projects = Assignedprojects.objects.filter(
+            student_email_id__email_id=student_email, marked=False
+        )
+        
+        # Serialize the data manually if needed
+        project_data = [
+            {
+                "pid": ap.pid,  # include this!
+                "project_name": ap.project_name.project_name,
+                "professor_email": ap.professor_email.email_id,
+                "meeting_time": ap.meeting_time
+            }
+            for ap in assigned_projects
+        ]
+        return JsonResponse(project_data, safe=False)
+
+    elif request.method == 'POST':
+        
+        try:
+        # Get project ID and meeting time from the request
+            data = json.loads(request.body)
+            project_id = data.get('project_id')
+            meeting_time = data.get('meeting_time')
+
+            if not project_id or not meeting_time:
+                return JsonResponse({"error": "Project ID and Meeting Time are required."}, status=400)
+
+        # Find the assigned project for the student
+            assigned_project = get_object_or_404(Assignedprojects, pid=project_id, student_email_id__email_id=student_email, marked=False)
+        
+        # Update the meeting time
+            assigned_project.meeting_time = meeting_time
+            assigned_project.save()
+
+            return JsonResponse({"message": "Meeting time updated successfully."}, status=200)
+    
+        except json.JSONDecodeError as e:
+            print(f"JSON Decode Error: {str(e)}")
+            return JsonResponse({"error": "Invalid JSON format."}, status=400)
+        except Exception as e:
+            print(f"Error setting meeting time: {str(e)}")
+            return JsonResponse({"error": "Failed to set meeting time."}, status=500)
+
+
+from django.http import JsonResponse
+from .models import Assignedprojects, ProfessorMeetingSchedule
+
+def student_final_meeting_time(request, student_email):
+    """
+    Fetch each distinct unmarked project’s final_meeting_time (no duplicates).
+    """
+    # Get all unmarked assignments for the student
+    assigned_qs = Assignedprojects.objects.filter(
+        student_email_id__email_id=student_email,
+        marked=False
+    )
+
+    seen_projects = set()
+    results = []
+
+    for ap in assigned_qs:
+        project_name = ap.project_name.project_name
+
+        # Skip if we've already added this project
+        if project_name in seen_projects:
+            continue
+
+        # Look for a schedule entry
+        schedule = ProfessorMeetingSchedule.objects.filter(
+            project_name=ap.project_name,
+            professor_email=ap.professor_email
+        ).first()
+
+        if schedule:
+            results.append({
+                'project_name': project_name,
+                'final_meeting_time': schedule.final_meeting_time
+            })
+            seen_projects.add(project_name)
+
+    return JsonResponse(results, safe=False, status=200)
+
+
+from django.http import JsonResponse
+from .models import Assignedprojects, ProfessorMeetingSchedule
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def professor_assigned_projects(request, professor_email):
+    """
+    Show all projects and students assigned to this professor.
+    Includes students' preferred meeting_time.
+    """
+    if request.method == 'GET':
+        assigned_projects = Assignedprojects.objects.filter(
+            professor_email__email_id=professor_email
+        )
+
+        project_data = [
+            {
+                "pid": ap.pid,
+                "student_email": ap.student_email_id.email_id,
+                "student_name": ap.name,
+                "project_name": ap.project_name.project_name,
+                "preferred_meeting_time": ap.meeting_time,
+                "final_meeting_time": ProfessorMeetingSchedule.objects.filter(
+                    project_name=ap.project_name,
+                    professor_email=ap.professor_email
+                ).first().final_meeting_time if ProfessorMeetingSchedule.objects.filter(
+                    project_name=ap.project_name,
+                    professor_email=ap.professor_email
+                ).exists() else None
+            }
+            for ap in assigned_projects
+        ]
+
+        return JsonResponse(project_data, safe=False)
+
+
+@csrf_exempt
+def set_final_meeting_time(request):
+    """
+    Professors set final meeting time for a project.
+    Expected POST data: { "professor_email": ..., "project_name": ..., "final_meeting_time": ... }
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            professor_email = data.get("professor_email")
+            project_name = data.get("project_name")
+            final_meeting_time = data.get("final_meeting_time")
+
+            if not all([professor_email, project_name, final_meeting_time]):
+                return JsonResponse({"error": "Missing required fields."}, status=400)
+
+            # Find or create entry in ProfessorMeetingSchedule
+            schedule, created = ProfessorMeetingSchedule.objects.get_or_create(
+                professor_email_id=professor_email,
+                project_name__project_name=project_name
+            )
+
+            schedule.final_meeting_time = final_meeting_time
+            schedule.save()
+
+            return JsonResponse({"message": "Final meeting time set successfully."})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)

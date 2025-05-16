@@ -31,3 +31,4 @@ class SubmittedprojectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submittedprojects
         fields = '__all__'
+

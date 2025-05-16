@@ -54,7 +54,7 @@ const Requests = ({ userData }) => {
         console.log("Response:", response.data);
 
         // 🚀 Remove the accepted request from UI **immediately**
-        setRequests((prevRequests) => prevRequests.filter((req) => req.request_id !== requestId));
+        setRequests((prevRequests) => prevRequests.filter((req) => req.id !== requestId));
 
         // 🛠️ Optionally clear the deadline input after acceptance
         setDeadlineDates((prevDeadlines) => {

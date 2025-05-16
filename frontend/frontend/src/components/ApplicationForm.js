@@ -6,6 +6,7 @@ const ApplicationForm = () => {
   const [studentData, setStudentData] = useState(null);
   const [projects, setProjects] = useState([]);
   const [professors, setProfessors] = useState([]);
+  const [githubProfile, setGithubProfile] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
   const [selectedProfessor, setSelectedProfessor] = useState("");
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,7 @@ const ApplicationForm = () => {
       student_email: studentData.email,
       professor_email: selectedProfessor,
       project_name: selectedProject,
+      github_profile: githubProfile.trim(),  // ✅ Include this field
     };
 
     axios
@@ -83,6 +85,25 @@ const ApplicationForm = () => {
           <option key={index} value={professor}>{professor}</option>
         ))}
       </select>
+
+      <h3>GitHub Profile</h3>
+      <input
+        type="url"
+        value={githubProfile}
+        onChange={(e) => setGithubProfile(e.target.value)}
+        placeholder="Enter your GitHub profile link"
+        style={{
+        padding: "8px",
+        width: "100%",
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+        marginBottom: "5px"
+        }}
+      />
+      <small style={{ color: "#bbb" }}>
+        (Timely updates of the project would be reviewed via GitHub profile link)
+      </small>
+
 
       <button onClick={handleSubmit} style={{ marginTop: "15px", padding: "10px", backgroundColor: "#61dafb", border: "none", borderRadius: "5px", cursor: "pointer" }}>Submit Application</button>
     </div>

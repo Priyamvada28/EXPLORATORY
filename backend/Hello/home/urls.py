@@ -34,9 +34,36 @@ from .views import add_project, delete_project, get_projects
 
 from .views import get_profile
 
+# … your existing imports …
+from .views import (
+    # … other views …,
+    student_unmarked_projects,
+    student_final_meeting_time,
+    professor_assigned_projects,
+    set_final_meeting_time
+    
+)
+
 
 
 urlpatterns = [
+    
+    path('professor/<str:professor_email>/assigned-projects/', professor_assigned_projects),
+path('professor/set-meeting-time/',set_final_meeting_time),
+
+    
+    path(
+        'student/<str:student_email>/unmarked-projects/',
+        student_unmarked_projects,
+        name='student-unmarked-projects'
+    ),
+
+    # 2. Fetch professor’s final_meeting_time for those same unmarked projects
+    path(
+        'student/<str:student_email>/final-meeting-time/',
+        student_final_meeting_time,
+        name='student-final-meeting-time'
+    ),
     
     path("profile/<str:email>/", get_profile, name="get_profile"),
     

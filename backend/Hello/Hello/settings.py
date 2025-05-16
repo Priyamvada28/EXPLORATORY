@@ -181,7 +181,8 @@ EMAIL_HOST_USER = "apikey"  # Always "apikey", not your email
 EMAIL_HOST_PASSWORD = "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"  # Replace with the API key you copied
 
 SENDGRID_VERIFIED_SENDERS = [
-    "priyamvada28negi@gmail.com"  # Replace with your verified emails
+    "priyamvada28negi@gmail.com",  # Replace with your verified emails
+    "goyalyash1608@gmail.com"
 ]
 
 

@@ -83,6 +83,8 @@ const Lab = ({ userData }) => {
             </Link>
             <Link to="/projects" className="option-card projects">Add/Delete (Projects)</Link>
             <Link to="/requests" className="option-card requests">Requests</Link>
+            <Link to="/meeting-scheduler" className="option-card requests">Meeting Scheduler</Link>
+            <Link to="/meeting-setter" className="option-card requests">Meeting Setter</Link>
           </>
         )}
       </div>
